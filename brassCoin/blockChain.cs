@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,21 +7,25 @@ namespace brassCoin
 {
     public class blockChain
     {
+        public static List<block> chain;
+        public static List<transaction> currentTransactions;
+
         public class transaction
         {
-            public string sender;
-            public string recipient;
-            public double amount;
+            public string sender { get; set; }
+            public string recipient { get; set; }
+            public double amount { get; set; }
 
         }
 
         public class block
         {
-            public string index;
+            public int index;
             public double timestamp;
-            public List<transaction> transactions = new List<transaction>();
+            public List<transaction> transactions;
             public int nonce;
-            public string prev_hash;
+            public Sha256Hash prev_hash;
+            public string genesis;
 
         }
 
@@ -29,6 +33,35 @@ namespace brassCoin
         {
             List<block> chain = new List<block>();
             List<transaction> currentTransactions = new List<transaction>();
+            // i guess we can put neon genesis evanglion in here
+            
+            bool isEmpty = !chain.Any();
+            if(isEmpty)
+                {
+                block genesisBlock = new block();
+                genesisBlock.index = 0;
+                genesisBlock.timestamp = 0;
+                genesisBlock.transactions = null;
+                genesisBlock.nonce = 42;
+                genesisBlock.prev_hash = Sha256Hash.Of("placeholder");
+                genesisBlock.genesis = "placeholder";
+                chain.Add(genesisBlock);
+                }
         }
+
+        public static int New_transaction(string sender, string recipient, double amount)
+        {
+            transaction tempTransaction = new transaction();
+            
+            tempTransaction.sender = sender;
+            tempTransaction.recipient = recipient;
+            tempTransaction.amount = amount;
+
+            currentTransactions.Add(tempTransaction);
+
+            return last_block().index;
+                
+        }
+            
     }
 }
