@@ -7,14 +7,14 @@ namespace brassCoin
 {
     public class blockChain
     {
-        public static List<block> chain;
-        public static List<transaction> currentTransactions;
+        private static List<block> chain;
+        private static List<transaction> currentTransactions;
 
         public class transaction
         {
-            public string sender { get; set; }
-            public string recipient { get; set; }
-            public double amount { get; set; }
+            public string sender;
+            public string recipient;
+            public double amount;
 
         }
 
@@ -62,6 +62,9 @@ namespace brassCoin
             return last_block().index;
                 
         }
-            
+        public static block last_block()
+        {
+            return chain[-1];
+        }
     }
 }
