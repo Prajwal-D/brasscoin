@@ -10,25 +10,6 @@ namespace brassCoin
         private static List<block> chain;
         private static List<transaction> currentTransactions;
 
-        public class transaction
-        {
-            public string sender;
-            public string recipient;
-            public double amount;
-
-        }
-
-        public class block
-        {
-            public int index;
-            public double timestamp;
-            public List<transaction> transactions;
-            public int nonce;
-            public Sha256Hash prev_hash;
-            public string genesis;
-
-        }
-
         public blockChain()
         {
             List<block> chain = new List<block>();
@@ -44,7 +25,7 @@ namespace brassCoin
                 genesisBlock.transactions = null;
                 genesisBlock.nonce = 42;
                 genesisBlock.prev_hash = Sha256Hash.Of("placeholder");
-                genesisBlock.genesis = "placeholder";
+                genesisBlock.everythingConcatnated = "placeholder";
                 chain.Add(genesisBlock);
                 }
         }
