@@ -7,11 +7,20 @@ namespace brassCoin
 {
     public class block
     {
-        public int index;
-        public double timestamp;
+        public long index;
+        public long timestamp;
         public List<transaction> transactions;
-        public int nonce;
-        public Sha256Hash prev_hash;
-        public string everythingConcatnated;
+        public proofOfWork nonce;
+        public Sha256Hash prevHash;  
+
+        public block(long indexIn, long timestampIn, List<transaction> transactionsIn, proofOfWork nonceIn, Sha256Hash prevHashIn)
+        {
+            index = indexIn;
+            timestamp = timestampIn;
+            transactions = transactionsIn;
+            nonce = nonceIn;
+            prevHash = prevHashIn;
+        }
     }
+
 }

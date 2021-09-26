@@ -7,26 +7,20 @@ namespace brassCoin
 {
     public class proofOfWork
     {
-        private readonly Double nonce;
+        public long nonce;
 
-        public proofOfWork(double proof)
+        public proofOfWork(long nonceIn)
         {
-            if (proof <= 0)
-                throw new ArgumentException("Can't have negative proof");
-
-            nonce = proof;
+            nonce = nonceIn;
 
         }
 
+        //so the proofer rn essentially takes the timestamp of the last block created, the hash of the block before that, and the nonce.
+        //however, this can lead to the transactions in the block being removed and the block keeping the same hash, which is a HUGE secuurity flaw that i will fix in the next git commit
+        //for now, bear with me
         public virtual bool verify(block proofToVerify)
         {
-            if (proofToVerify == null)
-                throw new InvalidOperationException("block cannot be empty");
-            // OHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH it takes the last nonce and nonces it with the new nonce
-            // cringe im gonna make it nonce EVERYTHING
-            // because how else do you ensure uhhhhhhh something something timestamp i don't remember but i've thought about this
-
-            return Sha256Hash.Of($"{proofToVerify.everythingConcatnated}{nonce}").StartsWith("0000");
+            return Sha256Hash.Of($"{nonce}{proofToVerify.timestamp}{proofToVerify.prevHash}").StartsWith("0000");
         }
 
     }

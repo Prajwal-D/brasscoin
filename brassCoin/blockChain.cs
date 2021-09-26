@@ -10,27 +10,32 @@ namespace brassCoin
         private static List<block> chain;
         private static List<transaction> currentTransactions;
 
-        public blockChain()
+        public blockChain(List<block> chainForSync)
         {
-            List<block> chain = new List<block>();
+            if (!(chainForSync?.Any() ?? false))
+            {
+                List<block> chain = new List<block>();
+            }
+            else
+            {
+                List<block> chain = chainForSync;
+            }
+
+            
             List<transaction> currentTransactions = new List<transaction>();
             // i guess we can put neon genesis evanglion in here
             
             bool isEmpty = !chain.Any();
             if(isEmpty)
                 {
-                block genesisBlock = new block();
-                genesisBlock.index = 0;
-                genesisBlock.timestamp = 0;
-                genesisBlock.transactions = null;
-                genesisBlock.nonce = 42;
-                genesisBlock.prev_hash = Sha256Hash.Of("placeholder");
-                genesisBlock.everythingConcatnated = "placeholder";
+                proofOfWork tempPOW = new proofOfWork(42);
+                block genesisBlock = new block(0, 0, null, tempPOW, Sha256Hash.Of("placeholder"));
+
                 chain.Add(genesisBlock);
                 }
         }
 
-        public static int New_transaction(string sender, string recipient, double amount)
+        public static long New_transaction(string sender, string recipient, double amount)
         {
             transaction tempTransaction = new transaction();
             
@@ -40,7 +45,7 @@ namespace brassCoin
 
             currentTransactions.Add(tempTransaction);
 
-            return last_block().index;
+            return last_block().index + 1;
                 
         }
         public static block last_block()
