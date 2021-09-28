@@ -40,7 +40,17 @@ namespace brassCoin
             return currentTransactions;
         }
 
-        public static long New_transaction(string sender, string recipient, double amount)
+        public static block newBlock(proofOfWork nonce, Sha256Hash prevHash)
+        {
+            block tempBlock = new block(chain.Count, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), currentTransactions, nonce, prevHash);
+
+            currentTransactions.Clear();
+
+            chain.Add(tempBlock);
+
+            return tempBlock;
+        }
+        public static long newTransaction(string sender, string recipient, double amount)
         {
             transaction tempTransaction = new transaction(sender, recipient, amount);
             

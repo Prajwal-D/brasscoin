@@ -31,7 +31,8 @@ namespace brassCoin
                 }
             }
 
-            return Sha256Hash.Of($"{nonce}{stringOfHashes}{proofToVerify.timestamp}{proofToVerify.prevHash}").StartsWith("0000");
+            string hashOfBlock = Sha256Hash.Of($"{stringOfHashes}{proofToVerify.timestamp}{proofToVerify.prevHash}").ToString();
+            return Sha256Hash.Of($"{nonce}{hashOfBlock}").StartsWith("0000");
         }
 
     }
