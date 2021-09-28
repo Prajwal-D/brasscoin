@@ -35,14 +35,15 @@ namespace brassCoin
                 }
         }
 
+        public static List<transaction> getCurrentTransactions()
+        {
+            return currentTransactions;
+        }
+
         public static long New_transaction(string sender, string recipient, double amount)
         {
-            transaction tempTransaction = new transaction();
+            transaction tempTransaction = new transaction(sender, recipient, amount);
             
-            tempTransaction.sender = sender;
-            tempTransaction.recipient = recipient;
-            tempTransaction.amount = amount;
-
             currentTransactions.Add(tempTransaction);
 
             return last_block().index + 1;

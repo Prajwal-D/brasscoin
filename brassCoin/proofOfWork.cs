@@ -15,12 +15,23 @@ namespace brassCoin
 
         }
 
-        //so the proofer rn essentially takes the timestamp of the last block created, the hash of the block before that, and the nonce.
-        //however, this can lead to the transactions in the block being removed and the block keeping the same hash, which is a HUGE secuurity flaw that i will fix in the next git commit
-        //for now, bear with me
+        //transaction problem solved hopefully
         public virtual bool verify(block proofToVerify)
         {
-            return Sha256Hash.Of($"{nonce}{proofToVerify.timestamp}{proofToVerify.prevHash}").StartsWith("0000");
+            string stringOfHashes = "";
+            List<transaction> toHash = blockChain.getCurrentTransactions();
+            if (toHash.Count > 0)
+            {
+                for (int i = 0; i <= toHash.Count - 1 ; i++)
+                {
+                    string stringToHash = $"{toHash[i].sender}{toHash[i].recipient}{toHash[i].amount}";
+
+                    stringOfHashes = $"{stringOfHashes}{Sha256Hash.Of(stringToHash).ToString()}";
+                    
+                }
+            }
+
+            return Sha256Hash.Of($"{nonce}{stringOfHashes}{proofToVerify.timestamp}{proofToVerify.prevHash}").StartsWith("0000");
         }
 
     }

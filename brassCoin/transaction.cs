@@ -10,5 +10,13 @@ namespace brassCoin
         public string sender;
         public string recipient;
         public double amount;
+
+        public transaction(string senderIn, string recipientIn, double amountIn)
+        {
+            sender = senderIn;
+            recipient = recipientIn;
+            amount = amountIn;
+
+        }
     }
 }
