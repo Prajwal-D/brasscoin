@@ -19,7 +19,7 @@ namespace brassCoin
         public virtual bool verify(block proofToVerify)
         {
             string stringOfHashes = "";
-            List<transaction> toHash = blockChain.getCurrentTransactions();
+            List<transaction> toHash = proofToVerify.transactions;
             if (toHash.Count > 0)
             {
                 for (int i = 0; i <= toHash.Count - 1 ; i++)
