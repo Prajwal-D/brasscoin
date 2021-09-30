@@ -32,8 +32,8 @@ namespace brassCoin
         {
             return new
             {
-                chain = primaryBlockChain.chain, // so essentially, ive fucked something up and i cannot be arsed to unfuck it, so the chain and the new transaction list is shared between every blockchain
-                length = primaryBlockChain.chain.Count // this is actually fairly easy to unfuck in the future if needs be
+                chain = primaryBlockChain.Chain, 
+                length = primaryBlockChain.Chain.Count
             };
         }
 

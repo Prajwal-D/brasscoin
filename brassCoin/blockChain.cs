@@ -7,8 +7,8 @@ namespace brassCoin
 {
     public class blockChain
     {
-        public List<block> chain;
-        public List<transaction> currentTransactions;
+        private List<block> chain;
+        private List<transaction> currentTransactions;
 
         public blockChain(List<block> chainForSync)
         {
@@ -30,10 +30,7 @@ namespace brassCoin
             }
         }
 
-        public List<transaction> getCurrentTransactions()
-        {
-            return currentTransactions;
-        }
+        public IReadOnlyCollection<block> Chain => chain.AsReadOnly();
 
         public block newBlock(proofOfWork nonce, Sha256Hash prevHash)
         {
