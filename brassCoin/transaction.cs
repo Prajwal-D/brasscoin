@@ -7,9 +7,9 @@ namespace brassCoin
 {
     public class transaction
     {
-        public string sender;
-        public string recipient;
-        public double amount;
+        private string sender;
+        private string recipient;
+        private double amount;
 
         public transaction(string senderIn, string recipientIn, double amountIn)
         {
@@ -18,5 +18,6 @@ namespace brassCoin
             amount = amountIn;
 
         }
+        public 
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace brassCoin
 {
@@ -23,6 +24,16 @@ namespace brassCoin
         }
         public long Index => index;
         public long Timestamp => timestamp;
+
+        [JsonConverter(typeof(ObjectToPropertyConverter), typeof(proofOfWork), "Value")]
+        public proofOfWork Nonce => nonce;
+
+        [JsonConverter(typeof(ObjectToPropertyConverter), typeof(Sha256Hash), "Value")]
+        public Sha256Hash PrevHash => prevHash;
+
+        public IReadOnlyCollection<transaction> Transactions => transactions.AsReadOnly();
+            
+
     }
 
 }

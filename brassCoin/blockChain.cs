@@ -48,7 +48,7 @@ namespace brassCoin
             
             currentTransactions.Add(tempTransaction);
 
-            return last_block().index + 1;
+            return last_block().Index + 1;
                 
         }
         public block last_block()

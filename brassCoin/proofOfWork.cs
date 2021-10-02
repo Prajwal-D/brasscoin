@@ -19,7 +19,7 @@ namespace brassCoin
         public virtual bool verify(block proofToVerify)
         {
             string stringOfHashes = "";
-            List<transaction> toHash = proofToVerify.transactions;
+            List<transaction> toHash = (List<transaction>)proofToVerify.Transactions;
             if (toHash.Count > 0)
             {
                 for (int i = 0; i <= toHash.Count - 1 ; i++)
@@ -31,7 +31,7 @@ namespace brassCoin
                 }
             }
 
-            string hashOfBlock = Sha256Hash.Of($"{stringOfHashes}{proofToVerify.timestamp}{proofToVerify.prevHash}").ToString();
+            string hashOfBlock = Sha256Hash.Of($"{stringOfHashes}{proofToVerify.Timestamp}{proofToVerify.PrevHash}").ToString();
             return Sha256Hash.Of($"{nonce}{hashOfBlock}").StartsWith("0000");
         }
 
