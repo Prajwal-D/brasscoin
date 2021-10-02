@@ -7,13 +7,15 @@ namespace brassCoin
 {
     public class proofOfWork
     {
-        public long nonce;
+        private long nonce;
 
         public proofOfWork(long nonceIn)
         {
             nonce = nonceIn;
 
         }
+
+        public long Nonce => nonce;
 
         //transaction problem solved hopefully
         public virtual bool verify(block proofToVerify)
@@ -24,7 +26,7 @@ namespace brassCoin
             {
                 for (int i = 0; i <= toHash.Count - 1 ; i++)
                 {
-                    string stringToHash = $"{toHash[i].sender}{toHash[i].recipient}{toHash[i].amount}";
+                    string stringToHash = $"{toHash[i].Sender}{toHash[i].Recipient}{toHash[i].Amount}";
 
                     stringOfHashes = $"{stringOfHashes}{Sha256Hash.Of(stringToHash).ToString()}";
                     

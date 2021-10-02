@@ -355,3 +355,4 @@ C:\Users\prajw\Documents\brasscoin\brasscoin\brassCoin\obj\Debug\net5.0\brassCoi
 C:\Users\prajw\Documents\brasscoin\brasscoin\brassCoin\obj\Debug\net5.0\ref\brassCoin.dll
 C:\Users\prajw\Documents\brasscoin\brasscoin\brassCoin\obj\Debug\net5.0\brassCoin.pdb
 C:\Users\prajw\Documents\brasscoin\brasscoin\brassCoin\obj\Debug\net5.0\brassCoin.genruntimeconfig.cache
+C:\Users\prajw\Documents\brasscoin\brasscoin\brassCoin\bin\Debug\net5.0\Newtonsoft.Json.dll

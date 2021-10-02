@@ -24,7 +24,12 @@ namespace brassCoin
             for (int i = 0; i < 6; i++)
             {
                 proofOfWork tempPOW = new proofOfWork(42);
-                block genesisBlock = new block(0, 0, null, tempPOW, Sha256Hash.Of("placeholder"));
+                List<transaction> tempLoT = new List<transaction>();
+                transaction tempTrans = new transaction("genesis", "brassbinn", 0);
+                tempLoT.Add(tempTrans);
+
+
+                block genesisBlock = new block(0, 0, tempLoT, tempPOW, Sha256Hash.Of("placeholder"));
 
                 chain.Add(genesisBlock);
             }

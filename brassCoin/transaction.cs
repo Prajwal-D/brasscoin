@@ -18,6 +18,8 @@ namespace brassCoin
             amount = amountIn;
 
         }
-        public 
+        public string Sender => sender;
+        public string Recipient => recipient;
+        public double Amount => amount;
     }
 }

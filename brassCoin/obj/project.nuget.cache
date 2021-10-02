@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "495CSn/zm5By7wKGpyUUVFDZh9fFsHpWakos0mzvuICmy1dE0amuLjscZ6ePA8rhaAfkGzpYeG7w3dyuffzItA==",
+  "dgSpecHash": "rzfpsII8QcZ2PfZEeCj5DWQHblnlz0HgX97iYyrx5MQzfxSoX0eBm7tIFMM1uIwD1QckAs91aza7XDoTs6NXVg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\prajw\\Documents\\brasscoin\\brassCoin\\brassCoin.csproj",
+  "projectFilePath": "C:\\Users\\prajw\\Documents\\brasscoin\\brasscoin\\brassCoin\\brassCoin.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\prajw\\.nuget\\packages\\microsoft.aspnetcore.mvc.razor.extensions\\5.0.9\\microsoft.aspnetcore.mvc.razor.extensions.5.0.9.nupkg.sha512",
     "C:\\Users\\prajw\\.nuget\\packages\\microsoft.aspnetcore.mvc.razor.runtimecompilation\\5.0.9\\microsoft.aspnetcore.mvc.razor.runtimecompilation.5.0.9.nupkg.sha512",
