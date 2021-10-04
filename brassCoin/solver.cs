@@ -5,17 +5,16 @@ using System.Threading.Tasks;
 
 namespace brassCoin
 {
-    public class solver
+    public static class solver
     {
-        public proofOfWork Solve(block lastBlock)
+        public static proofOfWork Solve(block lastBlock, long nonceToStartFrom)
         {
-            long nonceToTest = 0;
-            while(!new proofOfWork(nonceToTest).verify(lastBlock)) // for now it shall go on forever until it finds the nonce
+            while(!new proofOfWork(nonceToStartFrom).verify(lastBlock))
             {
-                nonceToTest += 1;
+                nonceToStartFrom += 1;
             }
 
-            proofOfWork powToReturn = new proofOfWork(nonceToTest);
+            proofOfWork powToReturn = new proofOfWork(nonceToStartFrom);
             return powToReturn;
         }
     }

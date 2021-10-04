@@ -22,6 +22,10 @@ namespace brassCoin
             nonce = nonceIn;
             prevHash = prevHashIn;
         }
+        public List<transaction> getListOfTrans()
+        {
+            return transactions;
+        }
         public long Index => index;
         public long Timestamp => timestamp;
 

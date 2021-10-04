@@ -13,39 +13,40 @@ namespace brassCoin
         public blockChain(List<block> chainForSync)
         {
             chain = chainForSync;
+            currentTransactions = new List<transaction>();
         }
         public blockChain()
         {
             chain = new List<block>();
-
-            List<transaction> currentTransactions = new List<transaction>();
+            currentTransactions = new List<transaction>();
             // i guess we can put neon genesis evanglion in here
 
-            for (int i = 0; i < 6; i++)
-            {
-                proofOfWork tempPOW = new proofOfWork(42);
-                List<transaction> tempLoT = new List<transaction>();
-                transaction tempTrans = new transaction("genesis", "brassbinn", 0);
-                tempLoT.Add(tempTrans);
 
+           proofOfWork tempPOW = new proofOfWork(42);
+           List<transaction> tempLoT = new List<transaction>();
+           transaction tempTrans = new transaction("genesis", "brassbinn", 0);
+           tempLoT.Add(tempTrans);
 
-                block genesisBlock = new block(0, 0, tempLoT, tempPOW, Sha256Hash.Of("placeholder"));
+           block genesisBlock = new block(0, 0, tempLoT, tempPOW, Sha256Hash.Of("placeholder"));
 
-                chain.Add(genesisBlock);
-            }
+           chain.Add(genesisBlock);
+
         }
 
         public IReadOnlyCollection<block> Chain => chain.AsReadOnly();
 
         public block newBlock(proofOfWork nonce, Sha256Hash prevHash)
         {
+            
             block tempBlock = new block(chain.Count, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), currentTransactions, nonce, prevHash);
 
-            currentTransactions.Clear();
-
             chain.Add(tempBlock);
-
+            
             return tempBlock;
+        }
+        public void dropTrans()
+        {
+            currentTransactions.Clear();
         }
         public long newTransaction(string sender, string recipient, double amount)
         {
@@ -58,7 +59,7 @@ namespace brassCoin
         }
         public block last_block()
         {
-            return chain[-1];
+            return chain.Last();
         }
     }
 }
