@@ -7,8 +7,8 @@ namespace brassCoin
 {
     public class transactionAPI
     {
-        public string Sender;
-        public string Recipient;
-        public double Amount;
+        public string Sender { get; set; }
+        public string Recipient { get; set; }
+        public double Amount { get; set; }
     }
 }
