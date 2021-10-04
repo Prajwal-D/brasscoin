@@ -37,8 +37,8 @@ namespace brassCoin
 
         public block newBlock(proofOfWork nonce, Sha256Hash prevHash)
         {
-            
-            block tempBlock = new block(chain.Count, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), currentTransactions, nonce, prevHash);
+            List<transaction> tempLoT = new List<transaction>(currentTransactions);
+            block tempBlock = new block(chain.Count, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), tempLoT, nonce, prevHash);
 
             chain.Add(tempBlock);
             
