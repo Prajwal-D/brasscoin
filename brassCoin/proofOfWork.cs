@@ -25,7 +25,7 @@ namespace brassCoin
             {
                 for (int i = 0; i <= toHash.Count - 1; i++)
                 {
-                    string stringToHash = $"{toHash[i].Sender}{toHash[i].Recipient}{toHash[i].Amount}";
+                    string stringToHash = $"{toHash[i].Sender}{toHash[i].Recipient}{toHash[i].Amount}{toHash[i].Signature}";
 
                     stringOfHashes = $"{stringOfHashes}{Sha256Hash.Of(stringToHash).ToString()}";
 

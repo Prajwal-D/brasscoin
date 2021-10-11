@@ -23,7 +23,7 @@ namespace brassCoin
         //idk maybe this should be within the blockchain?? might be useful in there idk
         public OkObjectResult Mine(proofOfWork nonce)
         {
-            primaryBlockChain.newTransaction("0", "thisAccount", 1); //have to implement accounts and public/private key encryption
+            primaryBlockChain.newTransaction("0", primaryBlockChain.getCurAccount().getAccountPubKey(), 1, "ignorable signature"); //REMEMEBER IN VERIFICATION ONLY ALLOW ONE OF THESE TRANSACTIONS U CAN'T HAVE 200 REWARDS FOR ONE BLOCK MINED
 
             block blockToJsonify = primaryBlockChain.newBlock(nonce, new proofOfWork(nonce.Value).getHashOf(primaryBlockChain.last_block()));
 
@@ -71,12 +71,54 @@ namespace brassCoin
                 length = primaryBlockChain.Chain.Count
             };
         }
+        //GET blockchain/api/account
+        [HttpGet("account")]
+        public dynamic GetAccount()
+        {
+            return new
+            {
+                account = primaryBlockChain.getCurAccount().getAccountPrivKey()
+            };
+        }
+        
+        [HttpPost("account/set")]
+        public dynamic PostSetAccount([FromBody] string base64OfprivKey)
+        {
+            Boolean success = primaryBlockChain.changeAccount(base64OfprivKey);
+
+            if(success)
+            {
+                return Ok(new
+                {
+                    message = $"Account changed successfully! Chain refreshed!"
+                });
+            }
+            else
+            {
+                return BadRequest(new
+                {
+                    message = $"Error! Invalid Key!"
+                });
+            }
+
+        }
+
 
         // POST blockchain/api/transactions/new
         [HttpPost("transactions/new")]
         public dynamic PostNewTrans([FromBody] transactionAPI value)
         {
-            long indexToAddTo = primaryBlockChain.newTransaction(value.Sender, value.Recipient, value.Amount);
+            long indexToAddTo;
+            if (value.Sender == primaryBlockChain.getCurAccount().getAccountPubKey() || value.Sender == "me")
+            {
+                account userAccount = primaryBlockChain.getCurAccount();
+                indexToAddTo = primaryBlockChain.newTransaction(userAccount.getAccountPubKey(), value.Recipient, value.Amount, userAccount.sign($"{userAccount.getAccountPubKey()}{value.Recipient}{value.Amount}"));
+            }
+            else
+            {
+                indexToAddTo = primaryBlockChain.newTransaction(value.Sender, value.Recipient, value.Amount, value.Signature);
+            }
+            
 
             return Ok(new
             {

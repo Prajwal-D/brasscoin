@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,20 +15,45 @@ namespace brassCoin
         {
             theAccount = RSA.Create();
         }
-        public account(string XMLstring)
+        public account(string base64RSA, bool priv)
         {
-            theAccount.FromXmlString(XMLstring);
-        }
-        public account(RSAParameters rsaParams)
-        {
-            theAccount.ImportParameters(rsaParams);
-        }
+            byte[] RSAkey = Convert.FromBase64String(base64RSA);
+            int temp;
 
+            if (priv)
+            {
+                theAccount.ImportRSAPrivateKey(RSAkey, out temp);
+            }
+            else
+            {
+                theAccount.ImportRSAPublicKey(RSAkey, out temp);
+            }
+        }
         public string getAccountPubKey()
         {
             string base64OfRSA = Convert.ToBase64String(theAccount.ExportRSAPublicKey());
 
             return base64OfRSA;
+        }
+
+        public string getAccountPrivKey()
+        {
+            string base64OfRSA = Convert.ToBase64String(theAccount.ExportRSAPrivateKey());
+
+            return base64OfRSA;
+        }
+
+        public string sign(string stringToSign)
+        {
+            byte[] bytesOfString = Encoding.ASCII.GetBytes(stringToSign);
+            byte[] signedBytes = theAccount.SignData(bytesOfString, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            return Convert.ToBase64String(signedBytes);
+        }
+        public Boolean verify(string stringToVerify, string signature)
+        {
+            byte[] bytesOfString = Encoding.ASCII.GetBytes(stringToVerify);
+            byte[] bytesOfSig = Convert.FromBase64String(signature);
+            return theAccount.VerifyData(bytesOfString, bytesOfSig, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
         }
     }
 }

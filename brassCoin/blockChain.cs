@@ -9,28 +9,59 @@ namespace brassCoin
     {
         private List<block> chain;
         private List<transaction> currentTransactions;
-
+        private account userAccount;
         public blockChain(List<block> chainForSync)
         {
             chain = chainForSync;
             currentTransactions = new List<transaction>();
+            userAccount = new account();
+        }
+
+        public void genesis()
+        {
+            //neon genesis evanglion moved to here
+            proofOfWork tempPOW = new proofOfWork(42);
+            List<transaction> tempLoT = new List<transaction>();
+            transaction tempTrans = new transaction(userAccount.getAccountPubKey(), "genesis", 0, userAccount.sign($"{userAccount.getAccountPubKey()}genesis0"));
+            tempLoT.Add(tempTrans);
+
+            block genesisBlock = new block(0, 0, tempLoT, tempPOW, Sha256Hash.Of("placeholder"));
+
+            chain.Add(genesisBlock);
         }
         public blockChain()
         {
             chain = new List<block>();
             currentTransactions = new List<transaction>();
-            // i guess we can put neon genesis evanglion in here
+            userAccount = new account();
 
+            genesis();
 
-           proofOfWork tempPOW = new proofOfWork(42);
-           List<transaction> tempLoT = new List<transaction>();
-           transaction tempTrans = new transaction("brasssbinn", "genesis", 0);
-           tempLoT.Add(tempTrans);
+        }
+        public Boolean changeAccount(string base64String)
+        {
+            //ok ensuring account imported has priv key
+            account tempAccount = new account(base64String, true);
 
-           block genesisBlock = new block(0, 0, tempLoT, tempPOW, Sha256Hash.Of("placeholder"));
+            try
+            {
+                string tempString = tempAccount.getAccountPrivKey();
+            }
+            catch (Exception)
+            {
+                return false;
+                
+            }
 
-           chain.Add(genesisBlock);
+            userAccount = new account(base64String, true);
+            genesis();
+            return true;
 
+        }
+
+        public account getCurAccount()
+        {
+            return userAccount;
         }
 
         public IReadOnlyCollection<block> Chain => chain.AsReadOnly();
@@ -48,9 +79,9 @@ namespace brassCoin
         {
             currentTransactions.Clear();
         }
-        public long newTransaction(string sender, string recipient, double amount)
+        public long newTransaction(string sender, string recipient, double amount, string signature)
         {
-            transaction tempTransaction = new transaction(sender, recipient, amount);
+            transaction tempTransaction = new transaction(sender, recipient, amount, signature);
             
             currentTransactions.Add(tempTransaction);
 
