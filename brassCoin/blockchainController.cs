@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
+
+//NEEED TO ADD VALIDATION OH GOD
 namespace brassCoin
 {
     [Route("[controller]/api")]
@@ -21,7 +23,7 @@ namespace brassCoin
         }
 
         //idk maybe this should be within the blockchain?? might be useful in there idk
-        public OkObjectResult Mine(proofOfWork nonce)
+        public OkObjectResult createNewBlock(proofOfWork nonce)
         {
             primaryBlockChain.newTransaction("0", primaryBlockChain.getCurAccount().getAccountPubKey(), 1, "ignorable signature"); //REMEMEBER IN VERIFICATION ONLY ALLOW ONE OF THESE TRANSACTIONS U CAN'T HAVE 200 REWARDS FOR ONE BLOCK MINED
 
@@ -42,23 +44,33 @@ namespace brassCoin
 
         //the mapped endpoints
 
-        // GET: blockchain/api/mine
+        // GET blockchain/api/mine
         [HttpGet("mine")]
         public dynamic GetMining()
         {
             proofOfWork nonce = solver.Solve(primaryBlockChain.last_block(), 0);
 
-            return Mine(nonce);
-            
+            return createNewBlock(nonce);
+
         }
 
-        // GET: blockchain/api/mine/{valuetostartfrom}
+        // GET blockchain/api/mine/{valuetostartfrom}
         [HttpGet("mine/{startPoint}")]
         public dynamic GetMiningWithPosition(int startPoint)
         {
             proofOfWork nonce = solver.Solve(primaryBlockChain.last_block(), startPoint);
 
-            return Mine(nonce);
+            return createNewBlock(nonce);
+        }
+
+        // GET blockchain/api/transactions
+        [HttpGet("transactions")]
+        public dynamic GetCurrentTransactions()
+        {
+            return new
+            {
+                transactions = primaryBlockChain.CurrentTransactions
+            };
         }
 
         // GET blockchain/api/chain
@@ -67,11 +79,12 @@ namespace brassCoin
         {
             return new
             {
-                chain = primaryBlockChain.Chain, 
+                chain = primaryBlockChain.Chain,
                 length = primaryBlockChain.Chain.Count
             };
         }
-        //GET blockchain/api/account
+
+        // GET blockchain/api/account
         [HttpGet("account")]
         public dynamic GetAccount()
         {
@@ -80,13 +93,14 @@ namespace brassCoin
                 account = primaryBlockChain.getCurAccount().getAccountPrivKey()
             };
         }
-        
-        [HttpPost("account/set")]
-        public dynamic PostSetAccount([FromBody] string base64OfprivKey)
-        {
-            Boolean success = primaryBlockChain.changeAccount(base64OfprivKey);
 
-            if(success)
+        // POST blockchain/api/account/set
+        [HttpPost("account/set")]
+        public dynamic PostSetAccount([FromBody] accountAPI base64OfprivKey)
+        {
+            Boolean success = primaryBlockChain.changeAccount(base64OfprivKey.Account);
+
+            if (success)
             {
                 return Ok(new
                 {
@@ -102,8 +116,30 @@ namespace brassCoin
             }
 
         }
+        // POST blockchain/api/nodes/register
+        [HttpPost("nodes/register")]
+        public dynamic PostNewNode([FromBody] nodeAPI value)
+        {
+            if (value.Address == null || !Uri.TryCreate(value.Address, UriKind.Absolute, out var uri))
+            {
+                return BadRequest(new
+                {
+                    message = $"Invalid url!"
+                });
+            }
 
+            primaryBlockChain.registerNode(value.Address);
 
+            return Ok(new
+            {
+                message = $"New node registered at {value.Address}!"
+            });
+
+        }
+
+        // GET blockchain/api/nodes/resolveconflicts
+
+       
         // POST blockchain/api/transactions/new
         [HttpPost("transactions/new")]
         public dynamic PostNewTrans([FromBody] transactionAPI value)

@@ -10,6 +10,8 @@ namespace brassCoin
         private List<block> chain;
         private List<transaction> currentTransactions;
         private account userAccount;
+        private List<node> nodes;
+
         public blockChain(List<block> chainForSync)
         {
             chain = chainForSync;
@@ -39,24 +41,20 @@ namespace brassCoin
 
         }
         public Boolean changeAccount(string base64String)
-        {
-            //ok ensuring account imported has priv key
-            account tempAccount = new account(base64String, true);
-
+        { 
             try
             {
-                string tempString = tempAccount.getAccountPrivKey();
+                //ok ensuring account imported is valid and has priv key
+                userAccount = new account(base64String, true);
             }
             catch (Exception)
             {
-                return false;
-                
+                return false;    
             }
 
-            userAccount = new account(base64String, true);
+            chain.Clear();
             genesis();
             return true;
-
         }
 
         public account getCurAccount()
@@ -64,6 +62,7 @@ namespace brassCoin
             return userAccount;
         }
 
+        public IReadOnlyCollection<transaction> CurrentTransactions => currentTransactions.AsReadOnly();
         public IReadOnlyCollection<block> Chain => chain.AsReadOnly();
 
         public block newBlock(proofOfWork nonce, Sha256Hash prevHash)
@@ -75,6 +74,7 @@ namespace brassCoin
             
             return tempBlock;
         }
+        //lol this function is redundant but i used it while figuring out an annoying bug and i would like to keep it as a memento
         public void dropTrans()
         {
             currentTransactions.Clear();
@@ -87,6 +87,57 @@ namespace brassCoin
 
             return last_block().Index + 1;
                 
+        }
+        public void registerNode(string uri)
+        {
+            node nodeToAdd = new node(uri);
+            if(!nodes.Contains(nodeToAdd))
+            {
+                nodes.Add(nodeToAdd);
+            }
+        }
+
+        public Boolean validateNewChain(List<block> chainToCompare)
+        {
+            int currentBlock = 1;
+            block lastBlock = chainToCompare[0];
+
+            while (currentBlock < chainToCompare.Count)
+            {
+                //validating that the nonce in the block currently being compared and the previous block hashed is equal to the hash in this block
+                block blockToCompare = chainToCompare[currentBlock];
+                proofOfWork nonceToConfirm = blockToCompare.Nonce;
+
+                if (!(blockToCompare.PrevHash == nonceToConfirm.getHashOf(lastBlock)))
+                    return false;
+
+                //validating all the transactions in this block
+                List<transaction> transactions = blockToCompare.getListOfTrans();
+                Boolean miningRewardRecievied = false;
+                int currentTrans = 0;
+
+                transaction transToVerify = transactions[currentTrans];
+                string stringToVerify = $"{transToVerify.Sender}{transToVerify.Recipient}{transToVerify.Amount}";
+                while (currentTrans < transactions.Count)
+                {
+                    //ignore reward for mining a block
+                    if (transactions[currentTrans].Sender == "0" && !miningRewardRecievied)
+                    {
+                        miningRewardRecievied = true;
+                        currentTrans += 1;
+                    }
+                    //ensuring no extra rewards are allowed
+                    else if (transactions[currentTrans].Sender == "0" && miningRewardRecievied)
+                        return false;
+                    //for making sure no impersonation can occur
+                    else if (!new account(transToVerify.Sender, false).verify(stringToVerify, transToVerify.Signature))
+                        return false;
+                    //progress to next transaction
+                    else
+                        currentTrans += 1;
+                }
+            }
+            return true;
         }
         public block last_block()
         {

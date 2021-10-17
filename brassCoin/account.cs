@@ -13,12 +13,14 @@ namespace brassCoin
 
         public account()
         {
-            theAccount = RSA.Create();
+            theAccount = RSA.Create(2048);
+               
         }
         public account(string base64RSA, bool priv)
         {
             byte[] RSAkey = Convert.FromBase64String(base64RSA);
             int temp;
+            theAccount = RSA.Create(2048);
 
             if (priv)
             {

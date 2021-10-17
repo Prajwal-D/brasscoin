@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\brassCoin"
   ],
-  "SelectedNode": "\\brassCoin.sln",
+  "SelectedNode": "\\brassCoin\\blockChain.cs",
   "PreviewInSolutionExplorer": false
 }
