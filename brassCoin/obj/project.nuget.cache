@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "rzfpsII8QcZ2PfZEeCj5DWQHblnlz0HgX97iYyrx5MQzfxSoX0eBm7tIFMM1uIwD1QckAs91aza7XDoTs6NXVg==",
+  "dgSpecHash": "cIeZtOzgLNBri2Cm7w6w/r92CVHkxc4CH+qYAPN0pUjWf5vUQqa8HX0wShesCg36pkx1syLjpqoqREn6OkYG2A==",
   "success": true,
   "projectFilePath": "C:\\Users\\prajw\\Documents\\brasscoin\\brasscoin\\brassCoin\\brassCoin.csproj",
   "expectedPackageFiles": [
@@ -16,10 +16,22 @@
     "C:\\Users\\prajw\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\prajw\\.nuget\\packages\\system.collections.immutable\\5.0.0\\system.collections.immutable.5.0.0.nupkg.sha512",
     "C:\\Users\\prajw\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
+    "C:\\Users\\prajw\\.nuget\\packages\\system.net.http.formatting.extension\\5.2.3\\system.net.http.formatting.extension.5.2.3.nupkg.sha512",
     "C:\\Users\\prajw\\.nuget\\packages\\system.reflection.metadata\\5.0.0\\system.reflection.metadata.5.0.0.nupkg.sha512",
     "C:\\Users\\prajw\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.7.1\\system.runtime.compilerservices.unsafe.4.7.1.nupkg.sha512",
     "C:\\Users\\prajw\\.nuget\\packages\\system.text.encoding.codepages\\4.5.1\\system.text.encoding.codepages.4.5.1.nupkg.sha512",
     "C:\\Users\\prajw\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'System.Net.Http.Formatting.Extension 5.2.3' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework 'net5.0'. This package may not be fully compatible with your project.",
+      "libraryId": "System.Net.Http.Formatting.Extension",
+      "targetGraphs": [
+        "net5.0"
+      ]
+    }
+  ]
 }

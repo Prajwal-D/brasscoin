@@ -36,8 +36,11 @@ namespace brassCoin
         public Sha256Hash PrevHash => prevHash;
 
         public IReadOnlyCollection<transaction> Transactions => transactions.AsReadOnly();
-            
-
+        
+        public static block recreate(long indexIn, long timestampIn, IEnumerable<transaction> transactionsIn, long nonceIn, string prevHashIn )
+        {
+            return new block(indexIn, timestampIn, transactionsIn.ToList(), new proofOfWork(nonceIn), new Sha256Hash(prevHashIn));
+        }
     }
 
 }

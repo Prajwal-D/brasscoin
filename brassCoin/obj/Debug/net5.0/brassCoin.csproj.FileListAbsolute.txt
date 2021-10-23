@@ -356,3 +356,6 @@ C:\Users\prajw\Documents\brasscoin\brasscoin\brassCoin\obj\Debug\net5.0\ref\bras
 C:\Users\prajw\Documents\brasscoin\brasscoin\brassCoin\obj\Debug\net5.0\brassCoin.pdb
 C:\Users\prajw\Documents\brasscoin\brasscoin\brassCoin\obj\Debug\net5.0\brassCoin.genruntimeconfig.cache
 C:\Users\prajw\Documents\brasscoin\brasscoin\brassCoin\bin\Debug\net5.0\Newtonsoft.Json.dll
+C:\Users\prajw\Documents\brasscoin\brasscoin\brassCoin\bin\Debug\net5.0\System.Net.Http.Extensions.dll
+C:\Users\prajw\Documents\brasscoin\brasscoin\brassCoin\bin\Debug\net5.0\System.Net.Http.Formatting.dll
+C:\Users\prajw\Documents\brasscoin\brasscoin\brassCoin\bin\Debug\net5.0\System.Net.Http.Primitives.dll

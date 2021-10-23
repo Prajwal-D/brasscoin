@@ -11,14 +11,6 @@ namespace brassCoin
         private List<transaction> currentTransactions;
         private account userAccount;
         private List<node> nodes;
-
-        public blockChain(List<block> chainForSync)
-        {
-            chain = chainForSync;
-            currentTransactions = new List<transaction>();
-            userAccount = new account();
-        }
-
         public void genesis()
         {
             //neon genesis evanglion moved to here
@@ -35,6 +27,7 @@ namespace brassCoin
         {
             chain = new List<block>();
             currentTransactions = new List<transaction>();
+            nodes = new List<node>();
             userAccount = new account();
 
             genesis();
@@ -64,6 +57,7 @@ namespace brassCoin
 
         public IReadOnlyCollection<transaction> CurrentTransactions => currentTransactions.AsReadOnly();
         public IReadOnlyCollection<block> Chain => chain.AsReadOnly();
+        public IReadOnlyCollection<node> Nodes => nodes.AsReadOnly();
 
         public block newBlock(proofOfWork nonce, Sha256Hash prevHash)
         {

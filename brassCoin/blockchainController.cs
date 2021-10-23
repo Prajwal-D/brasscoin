@@ -2,6 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -137,11 +141,62 @@ namespace brassCoin
 
         }
 
-        // GET blockchain/api/nodes/resolveconflicts
+        // GET blockchain/api/nodes/consensus
+        [HttpGet("nodes/consensus")]
+        public dynamic GetConsensus()
+        {
+            if (primaryBlockChain?.Nodes.Any() != true)
+            {
+                return NotFound(new
+                {
+                    message = $"No nodes found! Did you add any?"
+                });
+            }
 
+            List<IEnumerable<block>> chains = new List<IEnumerable<block>>();
+            foreach (var node in primaryBlockChain.Nodes)
+            {
+                try
+                {
+                    using (var client = new HttpClient())
+                    {
+                        client.BaseAddress = node.Address;
+                        var responseTask = client.GetAsync("blockchain/api/chain");
+                        responseTask.Wait();
+
+                        var result = responseTask.Result;
+                        if (result.StatusCode != HttpStatusCode.OK) //if fail to open webapi chain
+                        {
+                            throw new Exception();
+                        }
+
+                        var chainData = result.Content.ReadAsAsync<chainAPI>();
+                        chainData.Wait();
+
+                        var chainAndLen = chainData.Result;
+                        chains.Add(chainAndLen.Chain.Select(b => block.recreate(
+                            b.index,
+                            b.timestamp,
+                            b.transactions.Select(t => new transaction(t.sender, t.recipient, t.amount, t.signature)),
+                            b.nonce,
+                            b.prevHash
+                        )));
+                               
+                    }
+                }
+                catch (Exception) { }
+
+            }
+            return Ok(new
+            {
+                message = "placeholder"
+            }
+            );
+        }
        
         // POST blockchain/api/transactions/new
         [HttpPost("transactions/new")]
+        //HAVE TO ADD VALIDATION TO THIS
         public dynamic PostNewTrans([FromBody] transactionAPI value)
         {
             long indexToAddTo;
