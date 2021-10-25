@@ -19,7 +19,7 @@ namespace brassCoin
             //neon genesis evanglion moved to here
             proofOfWork tempPOW = new proofOfWork(42);
             List<transaction> tempLoT = new List<transaction>();
-            transaction tempTrans = new transaction("brassbinn", "genesis", 0, "brassbinn");
+            transaction tempTrans = new transaction("brassbinn", "genesis", 0, "I've been resting in the basement. For about 495 years.");
             tempLoT.Add(tempTrans);
 
             block genesisBlock = new block(0, 0, tempLoT, tempPOW, Sha256Hash.Of("something pretentious"));

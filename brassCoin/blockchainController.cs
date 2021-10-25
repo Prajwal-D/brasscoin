@@ -213,7 +213,7 @@ namespace brassCoin
 
         // POST blockchain/api/transactions/new
         [HttpPost("transactions/new")]
-        //HAVE TO ADD VALIDATION TO THIS
+        //ENSURE VALUES AREN'T EMPTY IF SENT IN
         public dynamic PostNewTrans([FromBody] transactionAPI value)
         {
             long indexToAddTo;
@@ -232,7 +232,7 @@ namespace brassCoin
             catch(Exception ex) { 
                 return BadRequest(new 
                 {
-                    message = ex 
+                    message = ex.Message
                 }); 
             }
 
