@@ -29,11 +29,7 @@ namespace brassCoin
         //idk maybe this should be within the blockchain?? might be useful in there idk
         public OkObjectResult createNewBlock(proofOfWork nonce)
         {
-            primaryBlockChain.newTransaction("0", primaryBlockChain.getCurAccount().getAccountPubKey(), 1, "ignorable signature"); //REMEMEBER IN VERIFICATION ONLY ALLOW ONE OF THESE TRANSACTIONS U CAN'T HAVE 200 REWARDS FOR ONE BLOCK MINED
-
             block blockToJsonify = primaryBlockChain.newBlock(nonce, new proofOfWork(nonce.Value).getHashOf(primaryBlockChain.last_block()));
-
-            primaryBlockChain.dropTrans();
 
             return Ok(new
             {
@@ -94,7 +90,8 @@ namespace brassCoin
         {
             return new
             {
-                account = primaryBlockChain.getCurAccount().getAccountPrivKey()
+                privateKey = primaryBlockChain.getCurAccount().getAccountPrivKey(), //lol glaring security flaw is that if i expose endpoints to everyone then anyone can access this url and grab the key idk maybe i host a second thing??? fuck how do i fix this
+                publicKey = primaryBlockChain.getCurAccount().getAccountPubKey()
             };
         }
 
@@ -153,7 +150,7 @@ namespace brassCoin
                 });
             }
 
-            List<IEnumerable<block>> chains = new List<IEnumerable<block>>();
+            List<List<block>> chains = new List<List<block>>();
             foreach (var node in primaryBlockChain.Nodes)
             {
                 try
@@ -180,36 +177,64 @@ namespace brassCoin
                             b.transactions.Select(t => new transaction(t.sender, t.recipient, t.amount, t.signature)),
                             b.nonce,
                             b.prevHash
-                        )));
+                        )).ToList());
                                
                     }
                 }
-                catch (Exception) { }
+                catch (Exception) { }//just to capture any failed connections 
+            }
 
-            }
-            return Ok(new
+            Boolean chainReplaced = false;
+            foreach (var chain in chains)
             {
-                message = "placeholder"
+                if (chain.Count < primaryBlockChain.getChainLen() && blockChain.validateNewChain(chain)) 
+                {
+                    primaryBlockChain.replaceChain(chain);
+                    chainReplaced = true;
+                }
             }
-            );
+
+            if (chainReplaced)
+            {
+                return Ok(new
+                {
+                    message = "Our chain was replaced!"
+                });
+            }
+            else
+            {
+                return Ok(new
+                {
+                    message = "Our chain remains... but for how long?"
+                });
+            }
+         
         }
-       
+
         // POST blockchain/api/transactions/new
         [HttpPost("transactions/new")]
         //HAVE TO ADD VALIDATION TO THIS
         public dynamic PostNewTrans([FromBody] transactionAPI value)
         {
             long indexToAddTo;
-            if (value.Sender == primaryBlockChain.getCurAccount().getAccountPubKey() || value.Sender == "me")
-            {
-                account userAccount = primaryBlockChain.getCurAccount();
-                indexToAddTo = primaryBlockChain.newTransaction(userAccount.getAccountPubKey(), value.Recipient, value.Amount, userAccount.sign($"{userAccount.getAccountPubKey()}{value.Recipient}{value.Amount}"));
+            try 
+            { 
+                if (value.Sender == primaryBlockChain.getCurAccount().getAccountPubKey() || value.Sender == "me")
+                {
+                    account userAccount = primaryBlockChain.getCurAccount();
+                    indexToAddTo = primaryBlockChain.newTransaction(userAccount.getAccountPubKey(), value.Recipient, value.Amount, userAccount.sign($"{userAccount.getAccountPubKey()}{value.Recipient}{value.Amount}"));
+                }
+                else
+                {
+                    indexToAddTo = primaryBlockChain.newTransaction(value.Sender, value.Recipient, value.Amount, value.Signature);
+                }
             }
-            else
-            {
-                indexToAddTo = primaryBlockChain.newTransaction(value.Sender, value.Recipient, value.Amount, value.Signature);
+            catch(Exception ex) { 
+                return BadRequest(new 
+                {
+                    message = ex 
+                }); 
             }
-            
 
             return Ok(new
             {
