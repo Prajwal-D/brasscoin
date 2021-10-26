@@ -11,8 +11,6 @@ using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-
-//NEEED TO ADD VALIDATION OH GOD
 namespace brassCoin
     //ensure only localuser can access certain webpages
 {    public class RestrictToLocalhostAttribute: ActionFilterAttribute

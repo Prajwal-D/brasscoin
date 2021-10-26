@@ -138,12 +138,8 @@ namespace brassCoin
 
 
             //ensuring enough money in wallet
-            if (ledger.TryGetValue(sender, out double value) && ledger[sender] > amount)
-                //modifying ledger
-                ledger[sender] = ledger[sender] - amount;
-            else
-                throw new Exception("Not enough money in wallet!");
-
+            if (!(ledger.TryGetValue(sender, out double value) && ledger[sender] > amount))
+                throw new Exception("Not enough money in wallet!");             
 
             transaction tempTrans = new transaction(sender, recipient, amount, signature);
             currentTransactions.Add(tempTrans);
