@@ -12,6 +12,7 @@ namespace brassCoin
         private account userAccount;
         private List<node> nodes;
         private Dictionary<string, double> ledger;
+        private Dictionary<string, double> tempLedger;
 
         //function made redundant because i decided to make genesis block consistent
         public void genesis()
@@ -92,12 +93,15 @@ namespace brassCoin
         public IReadOnlyCollection<transaction> CurrentTransactions => currentTransactions.AsReadOnly();
         public IReadOnlyCollection<block> Chain => chain.AsReadOnly();
         public IReadOnlyCollection<node> Nodes => nodes.AsReadOnly();
+        public IReadOnlyDictionary<string, double> Ledger => ledger;
 
         //this method assumes a block has been mined if ever called
         public block newBlock(proofOfWork nonce, Sha256Hash prevHash)
         {
             //adds values in block that was just mined to ledger
             changeLedger(last_block().getListOfTrans());
+
+            tempLedger = new Dictionary<string, double>(ledger);
 
             transaction tempTrans = new transaction("0", userAccount.getAccountPubKey(), 1, "he mined this wowowwowo");
 
@@ -137,8 +141,11 @@ namespace brassCoin
                 throw new Exception("Invalid signature! Transaction cannot be verified!");
 
 
+            //can't have infinite transactions that send money, but ledger shouldn't be changed before block is mined, so we use a tempLedger
             //ensuring enough money in wallet
-            if (!(ledger.TryGetValue(sender, out double value) && ledger[sender] > amount))
+            if (tempLedger.TryGetValue(sender, out double value) && value > amount)
+                tempLedger[sender] = value - amount;
+            else
                 throw new Exception("Not enough money in wallet!");             
 
             transaction tempTrans = new transaction(sender, recipient, amount, signature);

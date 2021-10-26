@@ -98,6 +98,15 @@ namespace brassCoin
             });
 
         }
+        // GET blockchain/api/ledger
+        [HttpGet("ledger")]
+        public dynamic GetLedger()
+        {
+            return Ok(new
+            {
+                ledger = primaryBlockChain.Ledger
+            });
+        }
         // GET blockchain/api/chain
         [HttpGet("chain")]
         public dynamic GetChain()
