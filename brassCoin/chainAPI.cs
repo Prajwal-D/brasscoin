@@ -11,18 +11,22 @@ namespace brassCoin
         {
             public string sender;
             public string recipient;
-            public double amount;
+            public string amount;
             public string signature;
         }
-        public class chainMadeOf
+        public class nonceOrHash
         {
-            public long index;
-            public long timestamp;
-            public List<transMadeOf> transactions;
-            public long nonce;
-            public string prevHash;
+            public string value;
         }
-        public List<chainMadeOf> Chain { get; set; }
+        public class blockMadeOf
+        {
+            public string index;
+            public string timestamp;
+            public nonceOrHash nonce;
+            public nonceOrHash prevHash;
+            public IList<transMadeOf> transactions;
+        }
+        public IList<blockMadeOf> Chain { get; set; }
         public long Length {get; set;}
     }
 }

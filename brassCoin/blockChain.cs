@@ -162,7 +162,6 @@ namespace brassCoin
         {
             //genesis block is ignored
             int currentBlock = 1;
-            block lastBlock = chainToCompare[0];
 
             //creating ongoing tempLedger for easy verification
             Dictionary<string, double> tempLedger = new Dictionary<string, double>();
@@ -171,11 +170,12 @@ namespace brassCoin
             {
                 //validating that the nonce in the block currently being compared and the previous block hashed is equal to the hash in this block
                 block blockToCompare = chainToCompare[currentBlock];
+                block lastBlock = chainToCompare[currentBlock - 1];
                 proofOfWork nonceToConfirm = blockToCompare.Nonce;
-                
 
 
-                if (!(blockToCompare.PrevHash == nonceToConfirm.getHashOf(lastBlock)))
+                Sha256Hash hash = nonceToConfirm.getHashOf(lastBlock);
+                if (!(blockToCompare.PrevHash.Value == nonceToConfirm.getHashOf(lastBlock).Value))
                     return false;
 
                 //validating all the transactions in this block
@@ -236,6 +236,7 @@ namespace brassCoin
 
                     currentTrans += 1;
                 }
+                currentBlock += 1;
             }
             return true;
         }

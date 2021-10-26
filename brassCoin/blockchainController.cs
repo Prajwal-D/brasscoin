@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,20 @@ using System.Threading.Tasks;
 
 //NEEED TO ADD VALIDATION OH GOD
 namespace brassCoin
-{
+    //ensure only localuser can access certain webpages
+{    public class RestrictToLocalhostAttribute: ActionFilterAttribute
+    {
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            var remoteIp = context.HttpContext.Connection.RemoteIpAddress;
+            if (!IPAddress.IsLoopback(remoteIp))
+            {
+                context.Result = new UnauthorizedResult();
+                return;
+            }
+            base.OnActionExecuting(context);
+        }
+    }
     [Route("[controller]/api")]
     [ApiController]
     public class blockchainController : ControllerBase
@@ -26,7 +40,6 @@ namespace brassCoin
             primaryBlockChain = blockChain;
         }
 
-        //idk maybe this should be within the blockchain?? might be useful in there idk
         public OkObjectResult createNewBlock(proofOfWork nonce)
         {
             block blockToJsonify = primaryBlockChain.newBlock(nonce, new proofOfWork(nonce.Value).getHashOf(primaryBlockChain.last_block()));
@@ -46,6 +59,7 @@ namespace brassCoin
 
         // GET blockchain/api/mine
         [HttpGet("mine")]
+        [RestrictToLocalhost]
         public dynamic GetMining()
         {
             proofOfWork nonce = solver.Solve(primaryBlockChain.last_block(), 0);
@@ -56,6 +70,7 @@ namespace brassCoin
 
         // GET blockchain/api/mine/{valuetostartfrom}
         [HttpGet("mine/{startPoint}")]
+        [RestrictToLocalhost]
         public dynamic GetMiningWithPosition(int startPoint)
         {
             proofOfWork nonce = solver.Solve(primaryBlockChain.last_block(), startPoint);
@@ -67,36 +82,60 @@ namespace brassCoin
         [HttpGet("transactions")]
         public dynamic GetCurrentTransactions()
         {
-            return new
+            return Ok(new
             {
                 transactions = primaryBlockChain.CurrentTransactions
-            };
+            });
         }
+        // GET blockchain/api/transactions/drop
+        [HttpGet("transactions/drop")]
+        [RestrictToLocalhost]
+        public dynamic GetDropTrans()
+        {
+            primaryBlockChain.dropTrans();
 
+            return Ok(new
+            {
+                message = "Transactions dropped!"
+            });
+
+        }
         // GET blockchain/api/chain
         [HttpGet("chain")]
         public dynamic GetChain()
         {
-            return new
+            return Ok(new
             {
                 chain = primaryBlockChain.Chain,
                 length = primaryBlockChain.Chain.Count
-            };
+            });
         }
 
         // GET blockchain/api/account
         [HttpGet("account")]
+        [RestrictToLocalhost]
         public dynamic GetAccount()
         {
-            return new
+            return Ok(new
             {
-                privateKey = primaryBlockChain.getCurAccount().getAccountPrivKey(), //lol glaring security flaw is that if i expose endpoints to everyone then anyone can access this url and grab the key idk maybe i host a second thing??? fuck how do i fix this
+                privateKey = primaryBlockChain.getCurAccount().getAccountPrivKey(),
                 publicKey = primaryBlockChain.getCurAccount().getAccountPubKey()
-            };
+            });
+        }
+
+        // GET blockchain/api/account/public
+        [HttpGet("account/public")]
+        public dynamic GetAccountPublic()
+        {
+            return Ok(new
+            {
+                publicKey = primaryBlockChain.getCurAccount().getAccountPubKey()
+            });
         }
 
         // POST blockchain/api/account/set
         [HttpPost("account/set")]
+        [RestrictToLocalhost]
         public dynamic PostSetAccount([FromBody] accountAPI base64OfprivKey)
         {
             Boolean success = primaryBlockChain.changeAccount(base64OfprivKey.Account);
@@ -119,6 +158,7 @@ namespace brassCoin
         }
         // POST blockchain/api/nodes/register
         [HttpPost("nodes/register")]
+        [RestrictToLocalhost]
         public dynamic PostNewNode([FromBody] nodeAPI value)
         {
             if (value.Address == null || !Uri.TryCreate(value.Address, UriKind.Absolute, out var uri))
@@ -140,6 +180,7 @@ namespace brassCoin
 
         // GET blockchain/api/nodes/consensus
         [HttpGet("nodes/consensus")]
+        [RestrictToLocalhost]
         public dynamic GetConsensus()
         {
             if (primaryBlockChain?.Nodes.Any() != true)
@@ -155,7 +196,11 @@ namespace brassCoin
             {
                 try
                 {
-                    using (var client = new HttpClient())
+                //this code ignores ssl certificates, which sounds unsafe, but fuck if I know how to fix it
+                HttpClientHandler clientHandler = new HttpClientHandler();
+                clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+                
+                using (var client = new HttpClient(clientHandler))
                     {
                         client.BaseAddress = node.Address;
                         var responseTask = client.GetAsync("blockchain/api/chain");
@@ -172,11 +217,11 @@ namespace brassCoin
 
                         var chainAndLen = chainData.Result;
                         chains.Add(chainAndLen.Chain.Select(b => block.recreate(
-                            b.index,
-                            b.timestamp,
-                            b.transactions.Select(t => new transaction(t.sender, t.recipient, t.amount, t.signature)),
-                            b.nonce,
-                            b.prevHash
+                            long.Parse(b.index),
+                            long.Parse(b.timestamp),
+                            b.transactions.Select(t => new transaction(t.sender, t.recipient, double.Parse(t.amount), t.signature)),
+                            long.Parse(b.nonce.value),
+                            b.prevHash.value
                         )).ToList());
                                
                     }
@@ -187,7 +232,7 @@ namespace brassCoin
             Boolean chainReplaced = false;
             foreach (var chain in chains)
             {
-                if (chain.Count < primaryBlockChain.getChainLen() && blockChain.validateNewChain(chain)) 
+                if (chain.Count > primaryBlockChain.getChainLen() && blockChain.validateNewChain(chain)) 
                 {
                     primaryBlockChain.replaceChain(chain);
                     chainReplaced = true;
@@ -213,6 +258,7 @@ namespace brassCoin
 
         // POST blockchain/api/transactions/new
         [HttpPost("transactions/new")]
+        [RestrictToLocalhost]
         //ENSURE VALUES AREN'T EMPTY IF SENT IN
         public dynamic PostNewTrans([FromBody] transactionAPI value)
         {
@@ -240,18 +286,6 @@ namespace brassCoin
             {
                 message = $"Transaction will be added to block {indexToAddTo}"
             });
-        }
-
-        // PUT api/<ValuesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<ValuesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
