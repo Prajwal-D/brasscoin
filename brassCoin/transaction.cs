@@ -19,9 +19,15 @@ namespace brassCoin
             amount = amountIn;
             signature = signatureIn;
         }
+        public double amountFloat()
+        {
+            return amount;
+        }
         public string Sender => sender;
         public string Recipient => recipient;
-        public double Amount => amount;
+        public string Amount => $"{amount}";
         public string Signature => signature;
+
+
     }
 }

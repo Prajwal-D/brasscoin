@@ -49,7 +49,6 @@ namespace brassCoin
             {
                 return false;    
             }
-
             return true;
         }
         public void changeLedger(List<transaction> transactionsToUse)
@@ -61,17 +60,17 @@ namespace brassCoin
                 {
                     try
                     {
-                        ledger.Add(trans.Recipient, trans.Amount);
+                        ledger.Add(trans.Recipient, trans.amountFloat());
                     }
                     catch (Exception)
                     {
-                        ledger[trans.Recipient] = ledger[trans.Recipient] + trans.Amount;
+                        ledger[trans.Recipient] = ledger[trans.Recipient] + trans.amountFloat();
                     }
                 }
 
                 if (!(trans.Sender == "0") && !(trans.Sender == "brassbinn"))
                 {
-                    ledger[trans.Sender] = ledger[trans.Sender] - trans.Amount;
+                    ledger[trans.Sender] = ledger[trans.Sender] - trans.amountFloat();
                 }
             }
         }
@@ -218,10 +217,10 @@ namespace brassCoin
                             return false;
 
                         //the sender must logically be in the tempLedger and have balance if they are to send any money
-                        if (tempLedger.TryGetValue(transToVerify.Sender, out double value) && tempLedger[transToVerify.Sender] > transToVerify.Amount)
+                        if (tempLedger.TryGetValue(transToVerify.Sender, out double value) && tempLedger[transToVerify.Sender] > transToVerify.amountFloat())
                         {
                             //transaction goes through
-                            tempLedger[transToVerify.Sender] = value - transToVerify.Amount;
+                            tempLedger[transToVerify.Sender] = value - transToVerify.amountFloat();
                         }
                         else
                             return false;
@@ -238,11 +237,11 @@ namespace brassCoin
                     //tempLedger has to be changed after all validation is done
                     try
                     {
-                        tempLedger.Add(transToVerify.Recipient, transToVerify.Amount);
+                        tempLedger.Add(transToVerify.Recipient, transToVerify.amountFloat());
                     }
                     catch (ArgumentException)
                     {
-                        tempLedger[transToVerify.Recipient] = tempLedger[transToVerify.Recipient] + transToVerify.Amount;
+                        tempLedger[transToVerify.Recipient] = tempLedger[transToVerify.Recipient] + transToVerify.amountFloat();
                     }
 
                     currentTrans += 1;

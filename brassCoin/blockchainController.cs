@@ -253,7 +253,7 @@ namespace brassCoin
                             b.transactions.Select(t => new transaction(t.sender, t.recipient, double.Parse(t.amount), t.signature)),
                             long.Parse(b.nonce.value),
                             b.prevHash.value
-                        )).ToList());
+                        )).ToList());// This recreates a block, and adds it to a chain based on json data
                                
                     }
                 }
