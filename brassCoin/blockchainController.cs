@@ -163,6 +163,17 @@ namespace brassCoin
             }
 
         }
+
+        // GET blockchain/api/nodes
+        [HttpGet("nodes")]
+        public dynamic GetNodes()
+        {
+            return Ok(new
+            {
+                nodes = primaryBlockChain.Nodes
+            });
+        }
+
         // POST blockchain/api/nodes/register
         [HttpPost("nodes/register")]
         [RestrictToLocalhost]
