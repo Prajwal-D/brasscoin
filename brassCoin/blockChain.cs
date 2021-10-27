@@ -50,7 +50,6 @@ namespace brassCoin
                 return false;    
             }
 
-            chain.Clear();
             return true;
         }
         public void changeLedger(List<transaction> transactionsToUse)
@@ -101,18 +100,20 @@ namespace brassCoin
             //adds values in block that was just mined to ledger
             changeLedger(last_block().getListOfTrans());
 
+            //redefines templedger for next list of transactions
             tempLedger = new Dictionary<string, double>(ledger);
 
             transaction tempTrans = new transaction("0", userAccount.getAccountPubKey(), 1, "he mined this wowowwowo");
-
             currentTransactions.Add(tempTrans);
 
+            //loi did you know that unless labelled new List<>, lists are passed byRef???
             List<transaction> tempLoT = new List<transaction>(currentTransactions);
             block tempBlock = new block(chain.Count, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), tempLoT, nonce, prevHash);
 
             chain.Add(tempBlock);
 
-            currentTransactions.Clear();
+            //might aswell keep it
+            dropTrans();
             
             return tempBlock;
         }
@@ -123,6 +124,12 @@ namespace brassCoin
         {
             currentTransactions.Clear();
         }
+        
+        public void dropNodes()
+        {
+            nodes.Clear();
+        }
+
         public long newTransaction(string sender, string recipient, double amount, string signature)
         {
             //ensuring sender and recipient are valid keys
@@ -140,9 +147,8 @@ namespace brassCoin
             if(!new account(sender, false).verify($"{sender}{recipient}{amount}",signature))
                 throw new Exception("Invalid signature! Transaction cannot be verified!");
 
-
-            //can't have infinite transactions that send money, but ledger shouldn't be changed before block is mined, so we use a tempLedger
             //ensuring enough money in wallet
+            //can't have infinite transactions that send money, but ledger shouldn't be changed before block is mined, so we use a tempLedger
             if (tempLedger.TryGetValue(sender, out double value) && value > amount)
                 tempLedger[sender] = value - amount;
             else
@@ -156,6 +162,7 @@ namespace brassCoin
         public void registerNode(string uri)
         {
             node nodeToAdd = new node(uri);
+            //if already within nodes list, don't add
             if(!nodes.Contains(nodeToAdd))
             {
                 nodes.Add(nodeToAdd);
@@ -163,6 +170,8 @@ namespace brassCoin
         }
         public static Boolean validateNewChain(List<block> chainToCompare)
         {
+            // If any part of validation fails, we ignore the entire chain, no need to fix someone else's mistakes
+
             //genesis block is ignored
             int currentBlock = 1;
 
@@ -221,7 +230,6 @@ namespace brassCoin
                     if (transactions[currentTrans].Sender == "0" && !miningRewardRecievied)
                     {
                         miningRewardRecievied = true;
-                        currentTrans += 1;
                     }
                     //ensuring no extra rewards are allowed
                     else if (transactions[currentTrans].Sender == "0" && miningRewardRecievied)

@@ -151,7 +151,7 @@ namespace brassCoin
             {
                 return Ok(new
                 {
-                    message = $"Account changed successfully! Chain refreshed!"
+                    message = $"Account changed successfully!"
                 });
             }
             else
@@ -171,6 +171,19 @@ namespace brassCoin
             return Ok(new
             {
                 nodes = primaryBlockChain.Nodes
+            });
+        }
+
+        // GET blockchain/api/nodes/drop
+        [HttpGet("nodes/drop")]
+        [RestrictToLocalhost]
+        public dynamic GetDropNodes()
+        {
+            primaryBlockChain.dropNodes();
+
+            return Ok(new
+            {
+                message = "Nodes dropped!"
             });
         }
 

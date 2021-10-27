@@ -1,0 +1,3 @@
+This folder contains the json formats that the program expects when POSTing it data. I'm fairly certain I've added input validation, but I suck, so tell me of any problems.
+
+Requests work in Postman using POST, having the JSON in the body, selecting "raw" data and selecting JSON in the dropdown menu for types. I used whatever headers Postman decided for me, so you can too.

@@ -1,0 +1,11 @@
+{
+    "Sender": "{sender's public key}",
+    "Recipient": "{recipient's public key}",
+    "Amount": {amount to send},
+	"Signature": "{signature}"
+}
+
+transactions can be created through {ipAddress:port}/brasscoin/api/transactions/new
+
+Sender can be replaced with "me"(in lowercase) to use the account already logged in
+Signature is not required if sender is "me" or is the public key of the account currently logged in.
