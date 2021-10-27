@@ -179,14 +179,22 @@ namespace brassCoin
 
             while (currentBlock < chainToCompare.Count)
             {
-                //validating that the nonce in the block currently being compared and the previous block hashed is equal to the hash in this block
+                //defining comparison vals
                 block blockToCompare = chainToCompare[currentBlock];
                 block lastBlock = chainToCompare[currentBlock - 1];
                 proofOfWork nonceToConfirm = blockToCompare.Nonce;
 
-
+                //validating that the nonce in the block currently being compared and the previous block hashed is equal to the hash in this block
                 Sha256Hash hash = nonceToConfirm.getHashOf(lastBlock);
                 if (!(blockToCompare.PrevHash.Value == nonceToConfirm.getHashOf(lastBlock).Value))
+                    return false;
+
+                //validating index is continuous
+                if (!(blockToCompare.Index == currentBlock))
+                    return false;
+
+                //validating timestamp is after each other
+                if (!((blockToCompare.Timestamp - lastBlock.Timestamp) > 0))
                     return false;
 
                 //validating all the transactions in this block
