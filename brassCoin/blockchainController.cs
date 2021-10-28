@@ -179,7 +179,7 @@ namespace brassCoin
         [RestrictToLocalhost]
         public dynamic GetDropNodes()
         {
-            primaryBlockChain.dropNodes();
+            primaryBlockChain.dropAllNodes();
 
             return Ok(new
             {
@@ -187,26 +187,34 @@ namespace brassCoin
             });
         }
 
-        // POST blockchain/api/nodes/register
-        [HttpPost("nodes/register")]
+        // GET blockchain/api/nodes/drop/{id}
+        [HttpGet("nodes/drop/{nodeID}")]
         [RestrictToLocalhost]
-        public dynamic PostNewNode([FromBody] nodeAPI value)
+        public dynamic GetDropNodeById(string nodeID)
         {
-            if (value.Address == null || !Uri.TryCreate(value.Address, UriKind.Absolute, out var uri))
+            node nodeToRem;
+            try
+            {
+                nodeToRem = new node(nodeID);
+            }
+            catch (Exception)
             {
                 return BadRequest(new
                 {
-                    message = $"Invalid url!"
+                    message = "Invalid url!"
                 });
             }
 
-            primaryBlockChain.registerNode(value.Address);
-
-            return Ok(new
-            {
-                message = $"New node registered at {value.Address}!"
-            });
-
+            if (primaryBlockChain.dropNode(nodeToRem))
+                return Ok(new
+                {
+                    message = $"Node {nodeID} successfully removed!"
+                });
+            else
+                return NotFound(new
+                {
+                    message = $"Node {nodeID} was not found!"
+                });
         }
 
         // GET blockchain/api/nodes/consensus
@@ -285,6 +293,28 @@ namespace brassCoin
                 });
             }
          
+        }
+
+        // POST blockchain/api/nodes/register
+        [HttpPost("nodes/register")]
+        [RestrictToLocalhost]
+        public dynamic PostNewNode([FromBody] nodeAPI value)
+        {
+            if (value.Address == null || !Uri.TryCreate(value.Address, UriKind.Absolute, out var uri))
+            {
+                return BadRequest(new
+                {
+                    message = $"Invalid url!"
+                });
+            }
+
+            primaryBlockChain.registerNode(value.Address);
+
+            return Ok(new
+            {
+                message = $"New node registered at {value.Address}!"
+            });
+
         }
 
         // POST blockchain/api/transactions/new

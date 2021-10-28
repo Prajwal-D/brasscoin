@@ -39,7 +39,7 @@ namespace brassCoin
 
         }
         public Boolean changeAccount(string base64String)
-        { 
+        {
             try
             {
                 //ok ensuring account imported is valid and has priv key
@@ -47,7 +47,7 @@ namespace brassCoin
             }
             catch (Exception)
             {
-                return false;    
+                return false;
             }
             return true;
         }
@@ -78,7 +78,7 @@ namespace brassCoin
         {
             chain = new List<block>(chainForReplacement);
             ledger.Clear();
-            foreach(var block in chain)
+            foreach (var block in chain)
             {
                 changeLedger(block.getListOfTrans());
             }
@@ -113,7 +113,7 @@ namespace brassCoin
 
             //might aswell keep it
             dropTrans();
-            
+
             return tempBlock;
         }
 
@@ -123,10 +123,15 @@ namespace brassCoin
         {
             currentTransactions.Clear();
         }
-        
-        public void dropNodes()
+
+        public void dropAllNodes()
         {
             nodes.Clear();
+        }
+
+        public bool dropNode(node nodeToDrop)
+        {
+            return nodes.Remove(nodeToDrop);
         }
 
         public long newTransaction(string sender, string recipient, double amount, string signature)
