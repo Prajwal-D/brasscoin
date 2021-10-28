@@ -190,7 +190,6 @@ namespace brassCoin
                 proofOfWork nonceToConfirm = blockToCompare.Nonce;
 
                 //validating that the nonce in the block currently being compared and the previous block hashed is equal to the hash in this block
-                Sha256Hash hash = nonceToConfirm.getHashOf(lastBlock);
                 if (!(blockToCompare.PrevHash.Value == nonceToConfirm.getHashOf(lastBlock).Value))
                     return false;
 
