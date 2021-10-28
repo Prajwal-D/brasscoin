@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\prajw\\Documents\\brasscoin\\brasscoin\\brassCoin\\brassCoin.csproj": {}
+    "C:\\Users\\prajw\\Documents\\brasscoin\\Prajwal-D\\brasscoin\\brassCoin\\brassCoin.csproj": {}
   },
   "projects": {
-    "C:\\Users\\prajw\\Documents\\brasscoin\\brasscoin\\brassCoin\\brassCoin.csproj": {
+    "C:\\Users\\prajw\\Documents\\brasscoin\\Prajwal-D\\brasscoin\\brassCoin\\brassCoin.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\prajw\\Documents\\brasscoin\\brasscoin\\brassCoin\\brassCoin.csproj",
+        "projectUniqueName": "C:\\Users\\prajw\\Documents\\brasscoin\\Prajwal-D\\brasscoin\\brassCoin\\brassCoin.csproj",
         "projectName": "brassCoin",
-        "projectPath": "C:\\Users\\prajw\\Documents\\brasscoin\\brasscoin\\brassCoin\\brassCoin.csproj",
+        "projectPath": "C:\\Users\\prajw\\Documents\\brasscoin\\Prajwal-D\\brasscoin\\brassCoin\\brassCoin.csproj",
         "packagesPath": "C:\\Users\\prajw\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\prajw\\Documents\\brasscoin\\brasscoin\\brassCoin\\obj\\",
+        "outputPath": "C:\\Users\\prajw\\Documents\\brasscoin\\Prajwal-D\\brasscoin\\brassCoin\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\prajw\\AppData\\Roaming\\NuGet\\NuGet.Config",
