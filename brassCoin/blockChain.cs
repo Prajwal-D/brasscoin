@@ -54,7 +54,7 @@ namespace brassCoin
         public void changeLedger(List<transaction> transactionsToUse)
         {
             //this method assumes that values sent to it are sanitised
-            foreach (var trans in last_block().getListOfTrans())
+            foreach (var trans in transactionsToUse)
             {
                 if (!(trans.Recipient == "genesis"))
                 {
