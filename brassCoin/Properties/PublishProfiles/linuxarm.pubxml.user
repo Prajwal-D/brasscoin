@@ -5,6 +5,6 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <_PublishTargetUrl>C:\Users\prajw\Documents\brasscoin\Prajwal-D\brasscoin\brassCoin\bin\Release\net5.0\publish\linuxarm</_PublishTargetUrl>
-    <History>True|2021-10-29T00:33:06.5520412Z;False|2021-10-29T01:30:42.1024472+01:00;True|2021-10-28T21:27:02.8002286+01:00;</History>
+    <History>False|2022-01-16T02:32:06.6143162Z;True|2021-10-29T01:33:06.5520412+01:00;False|2021-10-29T01:30:42.1024472+01:00;True|2021-10-28T21:27:02.8002286+01:00;</History>
   </PropertyGroup>
 </Project>

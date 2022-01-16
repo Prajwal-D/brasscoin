@@ -174,8 +174,8 @@ namespace brassCoin
             });
         }
 
-        // GET 
-        [HttpGet("nodes/drop")]blockchain/api/nodes/drop
+        // GET blockchain/api/nodes/drop
+        [HttpGet("nodes/drop")]
         [RestrictToLocalhost]
         public dynamic GetDropNodes()
         {
