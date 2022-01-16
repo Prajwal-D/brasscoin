@@ -1,0 +1,6 @@
+{
+  Account: {account's PrivateKey in Base64 encoded format}
+}
+
+accounts are changed through {ipaddress:port}/brasscoin/api/account/set
+  
