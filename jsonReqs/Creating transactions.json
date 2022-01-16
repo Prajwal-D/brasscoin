@@ -2,7 +2,7 @@
     "Sender": "{sender's public key}",
     "Recipient": "{recipient's public key}",
     "Amount": {amount to send},
-	"Signature": "{signature}"
+    "Signature": "{signature}"
 }
 
 transactions can be created through {ipAddress:port}/brasscoin/api/transactions/new
