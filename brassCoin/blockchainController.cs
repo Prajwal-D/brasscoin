@@ -174,8 +174,8 @@ namespace brassCoin
             });
         }
 
-        // GET blockchain/api/nodes/drop
-        [HttpGet("nodes/drop")]
+        // GET 
+        [HttpGet("nodes/drop")]blockchain/api/nodes/drop
         [RestrictToLocalhost]
         public dynamic GetDropNodes()
         {
@@ -187,33 +187,31 @@ namespace brassCoin
             });
         }
 
-        // GET blockchain/api/nodes/drop/{id}
-        [HttpGet("nodes/drop/{nodeID}")]
+        // POST blockchain/api/nodes/drop
+        [HttpPost("nodes/drop/{nodeID}")]
         [RestrictToLocalhost]
-        public dynamic GetDropNodeById(string nodeID)
+        public dynamic PostDropNode([FromBody] nodeAPI value)
         {
-            node nodeToRem;
-            try
-            {
-                nodeToRem = new node(nodeID);
-            }
-            catch (Exception)
+
+            if (value.Address == null || !Uri.TryCreate(value.Address, UriKind.Absolute, out var uri))
             {
                 return BadRequest(new
                 {
-                    message = "Invalid url!"
+                    message = $"Invalid url!"
                 });
             }
+
+            node nodeToRem = new node(value.Address);
 
             if (primaryBlockChain.dropNode(nodeToRem))
                 return Ok(new
                 {
-                    message = $"Node {nodeID} successfully removed!"
+                    message = $"Node {value.Address} successfully removed!"
                 });
             else
                 return NotFound(new
                 {
-                    message = $"Node {nodeID} was not found!"
+                    message = $"Node {value.Address} was not found!"
                 });
         }
 

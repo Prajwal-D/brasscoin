@@ -1,0 +1,36 @@
+All endpoints start with {ipaddress}:{port}/
+
+
+
+blockchain/api/mine
+	Mines a block, creates the next block to be mined
+
+blockchain/api/mine/{valuetostartfrom}
+	Mines a block from a given startpoint for the nonce, creates the next block to be mined
+
+blockchain/api/transactions
+	Lists the transactions that are to be added to the next block to be mined
+
+blockchain/api/transactions/drop
+	Drops ALL transactions to be added to the next block
+
+blockchain/api/ledger
+	Displays the balance of the account of every user, based on the last mined block
+
+blockchain/api/chain
+	Displays the entire blockchain in serialised JSON format
+
+blockchain/api/account
+	Displays the private and public key of the account currently logged in to the application(private key can be used to log back in)
+
+blockchain/api/account/public
+	Displays only the public key of the account currently logged in to the application(public key can be given out to someone for transactions)
+
+blockchain/api/nodes
+	Lists all the registered nodes
+
+blockchain/api/nodes/drop
+	Drops all registered nodes (IMPORTANT: POST REQUESTS AND GET REQUESTS TO THIS ENDPOINT YIELD DIFFERENT RESULTS.)
+
+blockchain/api/nodes/consensus
+	Runs the consensus algorithm and searches for longest valid chain on all registered nodes to replace current chain with

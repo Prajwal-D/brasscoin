@@ -1,0 +1,7 @@
+{
+	"address": "https://{ip}:5001"
+}	
+
+nodes are added through {ipaddress:port}/brasscoin/api/nodes/register
+
+default port for https is 5001 and http is 5000

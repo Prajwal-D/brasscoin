@@ -1,0 +1,3 @@
+This folder contains all the GET endpoints mapped to the application.
+
+Requests work in a web client of your choosing, and going to the link specified.

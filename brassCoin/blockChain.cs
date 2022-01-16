@@ -151,6 +151,10 @@ namespace brassCoin
             if(!new account(sender, false).verify($"{sender}{recipient}{amount}",signature))
                 throw new Exception("Invalid signature! Transaction cannot be verified!");
 
+            //ensuring amount is not negative
+            if(amount < 0)
+                throw new Exception("Negative amount! Don't do anything cheeky...");
+
             //ensuring enough money in wallet
             //can't have infinite transactions that send money, but ledger shouldn't be changed before block is mined, so we use a tempLedger
             if (tempLedger.TryGetValue(sender, out double value) && value > amount)
@@ -181,84 +185,98 @@ namespace brassCoin
 
             //creating ongoing tempLedger for easy verification
             Dictionary<string, double> tempLedger = new Dictionary<string, double>();
-
-            while (currentBlock < chainToCompare.Count)
+            try
             {
-                //defining comparison vals
-                block blockToCompare = chainToCompare[currentBlock];
-                block lastBlock = chainToCompare[currentBlock - 1];
-                proofOfWork nonceToConfirm = blockToCompare.Nonce;
-
-                //validating that the nonce in the block currently being compared and the previous block hashed is equal to the hash in this block
-                if (!(blockToCompare.PrevHash.Value == nonceToConfirm.getHashOf(lastBlock).Value))
-                    return false;
-
-                //validating index is continuous
-                if (!(blockToCompare.Index == currentBlock))
-                    return false;
-
-                //validating timestamp is after each other
-                if (!((blockToCompare.Timestamp - lastBlock.Timestamp) > 0))
-                    return false;
-
-                //validating all the transactions in this block
-                List<transaction> transactions = blockToCompare.getListOfTrans();
-                Boolean miningRewardRecievied = false;
-                int currentTrans = 0;
-
-                while (currentTrans < transactions.Count)
+                while (currentBlock < chainToCompare.Count)
                 {
+                    //defining comparison vals
+                    block blockToCompare = chainToCompare[currentBlock];
+                    block lastBlock = chainToCompare[currentBlock - 1];
+                    proofOfWork nonceToConfirm = blockToCompare.Nonce;
 
-                    transaction transToVerify = transactions[currentTrans];
-                    string stringToVerify = $"{transToVerify.Sender}{transToVerify.Recipient}{transToVerify.Amount}";
-
-                    //ensuring sender and recipient are valid keys
-                    if (!(transactions[currentTrans].Sender == "0"))
-                    {
-                        try
-                        {
-                            new account(transToVerify.Sender, false);
-                            new account(transToVerify.Recipient, false);
-                        }
-                        catch (Exception)
-                        {
-                            return false;
-                        }
-                        //for making sure no impersonation can occur
-                        if (!new account(transToVerify.Sender, false).verify(stringToVerify, transToVerify.Signature))
-                            return false;
-
-                        //the sender must logically be in the tempLedger and have balance if they are to send any money
-                        if (tempLedger.TryGetValue(transToVerify.Sender, out double value) && tempLedger[transToVerify.Sender] > transToVerify.amountFloat())
-                        {
-                            //transaction goes through
-                            tempLedger[transToVerify.Sender] = value - transToVerify.amountFloat();
-                        }
-                        else
-                            return false;
-                    }
-                    //ignore reward for mining a block
-                    if (transactions[currentTrans].Sender == "0" && !miningRewardRecievied)
-                    {
-                        miningRewardRecievied = true;
-                    }
-                    //ensuring no extra rewards are allowed
-                    else if (transactions[currentTrans].Sender == "0" && miningRewardRecievied)
+                    //validating that nonce is not negative
+                    if (nonceToConfirm.Value < 0)
                         return false;
 
-                    //tempLedger has to be changed after all validation is done
-                    try
-                    {
-                        tempLedger.Add(transToVerify.Recipient, transToVerify.amountFloat());
-                    }
-                    catch (ArgumentException)
-                    {
-                        tempLedger[transToVerify.Recipient] = tempLedger[transToVerify.Recipient] + transToVerify.amountFloat();
-                    }
+                    //validating that the nonce in the block currently being compared and the previous block hashed is equal to the hash in this block
+                    if (!(blockToCompare.PrevHash.Value == nonceToConfirm.getHashOf(lastBlock).Value))
+                        return false;
 
-                    currentTrans += 1;
+                    //validating index is continuous
+                    if (!(blockToCompare.Index == currentBlock))
+                        return false;
+
+                    //validating timestamp is after each other
+                    if (!((blockToCompare.Timestamp - lastBlock.Timestamp) > 0))
+                        return false;
+
+                    //validating all the transactions in this block
+                    List<transaction> transactions = blockToCompare.getListOfTrans();
+                    Boolean miningRewardRecievied = false;
+                    int currentTrans = 0;
+
+                    while (currentTrans < transactions.Count)
+                    {
+
+                        transaction transToVerify = transactions[currentTrans];
+                        string stringToVerify = $"{transToVerify.Sender}{transToVerify.Recipient}{transToVerify.Amount}";
+
+                        //ensuring sender and recipient are valid keys
+                        if (!(transactions[currentTrans].Sender == "0"))
+                        {
+                            try
+                            {
+                                new account(transToVerify.Sender, false);
+                                new account(transToVerify.Recipient, false);
+                            }
+                            catch (Exception)
+                            {
+                                return false;
+                            }
+                            //for making sure no impersonation can occur
+                            if (!new account(transToVerify.Sender, false).verify(stringToVerify, transToVerify.Signature))
+                                return false;
+
+                            //ensuring amount isn't negative
+                            if (transToVerify.amountFloat() < 0)
+                                return false;
+
+                            //the sender must logically be in the tempLedger and have balance if they are to send any money
+                            if (tempLedger.TryGetValue(transToVerify.Sender, out double value) && tempLedger[transToVerify.Sender] > transToVerify.amountFloat())
+                            {
+                                //transaction goes through
+                                tempLedger[transToVerify.Sender] = value - transToVerify.amountFloat();
+                            }
+                            else
+                                return false;
+                        }
+                        //ignore reward for mining a block
+                        if (transactions[currentTrans].Sender == "0" && !miningRewardRecievied)
+                        {
+                            miningRewardRecievied = true;
+                        }
+                        //ensuring no extra rewards are allowed
+                        else if (transactions[currentTrans].Sender == "0" && miningRewardRecievied)
+                            return false;
+
+                        //tempLedger has to be changed after all validation is done
+                        try
+                        {
+                            tempLedger.Add(transToVerify.Recipient, transToVerify.amountFloat());
+                        }
+                        catch (ArgumentException)
+                        {
+                            tempLedger[transToVerify.Recipient] = tempLedger[transToVerify.Recipient] + transToVerify.amountFloat();
+                        }
+
+                        currentTrans += 1;
+                    }
+                    currentBlock += 1;
                 }
-                currentBlock += 1;
+            }
+            catch (Exception)
+            {
+                return false;
             }
             return true;
         }

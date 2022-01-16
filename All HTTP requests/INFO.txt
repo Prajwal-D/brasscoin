@@ -1,0 +1,6 @@
+Herein lies all the API endpoints I have mapped to this application and basic documentation on accessing/interacting with them.
+
+The default ipaddress and port should be localhost:5001, and you will need to be on that address to post any data to it, as it rejects inputs made by addresses not localhost
+Oh, and use https://
+
+:)
